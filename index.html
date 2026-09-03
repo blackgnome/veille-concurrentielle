@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veille concurrentielle automatisée par IA — Chaque lundi matin, sache ce que font tes concurrents</title>
+  <meta name="description" content="Veille concurrentielle automatisée par IA pour PME et fondateurs. Digest hebdo personnalisé, 5 min de lecture, livré chaque lundi matin. Place de pilote : 50€/mois." />
+  <meta name="author" content="Gabriel Suarez" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Veille concurrentielle automatisée — 50€/mois en place de pilote" />
+  <meta property="og:description" content="Chaque lundi matin, reçois un digest de 5 min qui te dit exactement ce que tes concurrents ont fait la semaine passée." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+
+  <!-- Favicon (à remplacer par ton vrai favicon) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>" />
+
+  <style>
+    /* ============================================
+       VARIABLES — modifie ici pour re-themer
+       ============================================ */
+    :root {
+      --color-primary: #2563eb;
+      --color-primary-dark: #1d4ed8;
+      --color-primary-light: #dbeafe;
+      --color-text: #0f172a;
+      --color-text-muted: #475569;
+      --color-text-soft: #64748b;
+      --color-bg: #ffffff;
+      --color-bg-alt: #f8fafc;
+      --color-border: #e2e8f0;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+
+      --max-width: 720px;
+    }
+
+    /* ============================================
+       RESET + BASE
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3 { line-height: 1.2; font-weight: 700; margin: 0 0 0.5em; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2rem, 5vw, 2.75rem); }
+    h2 { font-size: clamp(1.5rem, 3.5vw, 1.875rem); margin-top: 1.5em; }
+    h3 { font-size: 1.125rem; margin-top: 1.25em; }
+    p { margin: 0 0 1em; }
+    a { color: var(--color-primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    section:last-of-type { border-bottom: none; }
+    section.alt { background: var(--color-bg-alt); }
+
+    /* ============================================
+       HEADER (sticky minimal)
+       ============================================ */
+    header.site-header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--color-text);
+    }
+    .header-cta { font-size: 0.95rem; }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      padding: 80px 0 64px;
+      text-align: center;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .hero .badge {
+      display: inline-block;
+      background: var(--color-primary-light);
+      color: var(--color-primary-dark);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+    .hero h1 {
+      max-width: 14ch;
+      margin: 0 auto 20px;
+    }
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-muted);
+      max-width: 36ch;
+      margin: 0 auto 32px;
+    }
+
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+      text-decoration: none;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-primary);
+      border: 1.5px solid var(--color-border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--color-primary);
+      text-decoration: none;
+    }
+    .btn-large { padding: 16px 32px; font-size: 1.0625rem; }
+
+    /* ============================================
+       PAIN SECTION (Pourquoi)
+       ============================================ */
+    .pain-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0;
+    }
+    .pain-list li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      color: var(--color-text-muted);
+    }
+    .pain-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-text-soft);
+      font-weight: 600;
+    }
+    .pain-stats {
+      background: var(--color-bg-alt);
+      border-left: 3px solid var(--color-warning);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 24px 0;
+      font-weight: 500;
+    }
+
+    /* ============================================
+       STEPS (Comment ça marche)
+       ============================================ */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 32px 0;
+    }
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 20px 20px 20px 64px;
+      margin-bottom: 12px;
+      background: var(--color-bg-alt);
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .steps strong { color: var(--color-text); }
+    .steps .step-detail {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    /* ============================================
+       DELIVERABLES (Ce que tu reçois)
+       ============================================ */
+    .deliverables {
+      display: grid;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .deliverable {
+      background: var(--color-bg-alt);
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+    }
+    .deliverable h3 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .deliverable h3 .emoji {
+      font-size: 1.5rem;
+    }
+    .deliverable ul {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: var(--color-text-muted);
+    }
+    .deliverable li { margin-bottom: 6px; }
+
+    /* ============================================
+       PRICING
+       ============================================ */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .price-card {
+      background: var(--color-bg);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .price-card.featured {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: "PLACE DE PILOTE";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-primary);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+    .price-card h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .price-card .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 8px 0 4px;
+    }
+    .price-card .price span {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+    .price-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+      font-size: 0.95rem;
+    }
+    .price-card ul li {
+      padding: 4px 0;
+      color: var(--color-text-muted);
+    }
+    .price-card ul li::before {
+      content: "✓ ";
+      color: var(--color-success);
+      font-weight: 700;
+    }
+    .price-warning {
+      background: #fef3c7;
+      border-left: 3px solid var(--color-warning);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 24px 0 0;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================
+       TRUST BADGES (Pourquoi moi)
+       ============================================ */
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .trust-item {
+      padding: 16px;
+      background: var(--color-bg-alt);
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+    }
+    .trust-item strong { display: block; margin-bottom: 4px; }
+    .trust-item span { color: var(--color-text-muted); font-size: 0.95rem; }
+
+    /* ============================================
+       DEMO BOX
+       ============================================ */
+    .demo-box {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: white;
+      padding: 40px 32px;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      margin: 32px 0;
+    }
+    .demo-box h2 { color: white; margin-top: 0; }
+    .demo-box p { color: rgba(255,255,255,0.92); margin-bottom: 24px; }
+    .demo-box .btn-primary {
+      background: white;
+      color: var(--color-primary-dark);
+    }
+    .demo-box .btn-primary:hover {
+      background: #f1f5f9;
+      color: var(--color-primary-dark);
+    }
+
+    /* ============================================
+       FAQ
+       ============================================ */
+    .faq-item {
+      border-bottom: 1px solid var(--color-border);
+      padding: 20px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-item h3 {
+      margin: 0 0 8px;
+      font-size: 1.0625rem;
+      font-weight: 600;
+    }
+    .faq-item p {
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* ============================================
+       FORM
+       ============================================ */
+    .signup-form {
+      background: var(--color-bg-alt);
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      margin: 32px 0;
+    }
+    .signup-form h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .signup-form .form-intro {
+      text-align: center;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: var(--color-text);
+    }
+    .form-group label .optional {
+      color: var(--color-text-soft);
+      font-weight: 400;
+      font-size: 0.85rem;
+      margin-left: 6px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: inherit;
+      background: white;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-light);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-submit {
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .form-note {
+      font-size: 0.85rem;
+      color: var(--color-text-soft);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* ============================================
+       FINAL CTA
+       ============================================ */
+    .final-cta {
+      text-align: center;
+      padding: 80px 0;
+      background: var(--color-bg);
+    }
+    .final-cta h2 { font-size: 2rem; }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    footer.site-footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .footer-inner a { color: var(--color-text-muted); }
+    .footer-links { margin-bottom: 12px; }
+    .footer-links a { margin: 0 12px; }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      section { padding: 48px 0; }
+      .hero { padding: 56px 0 48px; }
+      .header-cta { display: none; }
+      .demo-box { padding: 32px 24px; }
+      .signup-form { padding: 24px 20px; }
+    }
+  </style>
+
+  <!-- Schema.org FAQ pour le SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "C'est légal de scraper LinkedIn et autres sources ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Je n'utilise pas de scraping agressif. Sources : APIs publiques, RSS, flux officiels. Tu restes 100% clean."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Et si l'agent hallucine ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Chaque signal est sourcé (URL cliquable). Tu vérifies en 1 clic. Si hallucination avérée → correctif immédiat."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Combien de concurrents je peux suivre ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Illimité. La plupart des clients en suivent 3-7."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Combien de temps pour l'onboarding ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "30 min en visio, 1 seule fois."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- ============================================
+       HEADER
+       ============================================ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">🔍 Veille PME</div>
+      <a href="#demo" class="header-cta">Démo gratuite →</a>
+    </div>
+  </header>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">🧪 PLACE DE PILOTE — 3 CLIENTS MAX</div>
+      <h1>Chaque lundi matin, sache exactement ce que tes concurrents ont fait.</h1>
+      <p class="subtitle">Veille concurrentielle automatisée par IA. 5 min de lecture. Prêt avant ta première tasse de café.</p>
+      <a href="#demo" class="btn btn-primary btn-large">Je veux ma démo gratuite</a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       POURQUOI (le problème)
+       ============================================ -->
+  <section>
+    <div class="container">
+      <h2>Tu perds 2 à 3 heures par semaine à checker manuellement.</h2>
+      <ul class="pain-list">
+        <li>Les sites de tes concurrents (changements de prix, nouvelles features)</li>
+        <li>LinkedIn (embauches, posts stratégiques, mouvements des fondateurs)</li>
+        <li>Google Alerts (bruyants, pas personnalisés, faux positifs à gogo)</li>
+        <li>Twitter/X, Reddit, forums de niche</li>
+        <li>Job boards (WTTJ, Indeed) — les offres d'emploi sont un signal fort</li>
+      </ul>
+      <div class="pain-stats">
+        <strong>Résultat :</strong> tu rates 80% des signaux et tu loupes les bonnes infos.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       COMMENT ÇA MARCHE
+       ============================================ -->
+  <section class="alt">
+    <div class="container">
+      <h2>Comment ça marche</h2>
+      <ol class="steps">
+        <li>
+          <strong>Tu me donnes 3-5 concurrents + tes priorités</strong>
+          <span class="step-detail">5 minutes d'onboarding, une seule fois.</span>
+        </li>
+        <li>
+          <strong>L'agent travaille 7j/7</strong>
+          <span class="step-detail">Scraping, classification, résumé — en continu.</span>
+        </li>
+        <li>
+          <strong>Chaque lundi à 8h, tu reçois un email</strong>
+          <span class="step-detail">5-10 mouvements clés de la semaine, filtrés pour toi.</span>
+        </li>
+        <li>
+          <strong>Tu cliques, tu lis, tu passes à l'action</strong>
+          <span class="step-detail">5 minutes max de lecture. Fini.</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CE QUE TU REÇOIS
+       ============================================ -->
+  <section>
+    <div class="container">
+      <h2>Ce que tu reçois</h2>
+      <div class="deliverables">
+        <div class="deliverable">
+          <h3><span class="emoji">📧</span> Digest hebdo (email)</h3>
+          <ul>
+            <li>Top 5-10 mouvements de la semaine</li>
+            <li>Pour chaque mouvement : ce qui s'est passé + pourquoi c'est important pour TOI + lien source</li>
+          </ul>
+        </div>
+        <div class="deliverable">
+          <h3><span class="emoji">📊</span> Tableau Notion (accès permanent)</h3>
+          <ul>
+            <li>Archive complète, filtrable par concurrent / type de signal</li>
+            <li>Toujours accessible, jamais perdu</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       TARIFICATION
+       ============================================ -->
+  <section class="alt">
+    <div class="container">
+      <h2>Tarification</h2>
+      <div class="pricing-grid">
+        <div class="price-card featured">
+          <h3>Pilote V1</h3>
+          <div class="price">50 €<span>/mois</span></div>
+          <ul>
+            <li>3 places disponibles</li>
+            <li>Tout inclus : sources illimitées, concurrents illimités, Notion, email</li>
+            <li>Mois par mois, résiliable</li>
+            <li>1er mois offert si pas satisfait</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <h3>Prix normal</h3>
+          <div class="price">290 €<span>/mois</span></div>
+          <ul>
+            <li>Tout inclus (idem Pilote)</li>
+            <li>Mensuel ou annuel (-15%)</li>
+            <li>1er mois offert si pas satisfait</li>
+          </ul>
+        </div>
+      </div>
+      <div class="price-warning">
+        ⚠️ <strong>Place de pilote</strong> = 3 clients max à ce prix. Une fois les 3 places prises → tarif normal.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       POURQUOI MOI FAIRE CONFIANCE
+       ============================================ -->
+  <section>
+    <div class="container">
+      <h2>Pourquoi me faire confiance</h2>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <strong>🤖 IA locale</strong>
+          <span>Tes données ne vont pas chez OpenAI. Confidentialité totale.</span>
+        </div>
+        <div class="trust-item">
+          <strong>🇫🇷 100% français</strong>
+          <span>Digest en français, support en français.</span>
+        </div>
+        <div class="trust-item">
+          <strong>🎯 Ciblé pour toi</strong>
+          <span>Pas un outil générique — paramétré pour TON business.</span>
+        </div>
+        <div class="trust-item">
+          <strong>📞 Un humain</strong>
+          <span>Tu parles à Gabriel, pas à un bot.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       DÉMO + FORMULAIRE
+       ============================================ -->
+  <section class="alt" id="demo">
+    <div class="container">
+      <div class="demo-box">
+        <h2>Exemple gratuit sur tes vrais concurrents en 24h.</h2>
+        <p>Pas d'engagement, pas de CB. Juste la preuve que ça marche.</p>
+      </div>
+
+      <form class="signup-form" action="#" method="POST" name="demo-request">
+        <h2>Je réserve ma démo</h2>
+        <p class="form-intro">Remplis ce formulaire — je te prépare un digest personnalisé sur tes concurrents sous 24h.</p>
+
+        <div class="form-group">
+          <label for="email">Email <span style="color: var(--color-warning);">*</span></label>
+          <input type="email" id="email" name="email" required placeholder="ton@email.fr" autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="name">Prénom <span style="color: var(--color-warning);">*</span></label>
+          <input type="text" id="name" name="name" required placeholder="Gabriel" autocomplete="given-name" />
+        </div>
+
+        <div class="form-group">
+          <label for="company">Société <span class="optional">(optionnel)</span></label>
+          <input type="text" id="company" name="company" placeholder="ACME SAS" />
+        </div>
+
+        <div class="form-group">
+          <label for="competitors">3 concurrents à surveiller <span class="optional">(optionnel mais utile)</span></label>
+          <textarea id="competitors" name="competitors" placeholder="Ex : Notion, Linear, ClickUp… ou les URLs de leurs sites"></textarea>
+        </div>
+
+        <div class="form-submit">
+          <button type="submit" class="btn btn-primary btn-large">Je veux ma démo gratuite</button>
+        </div>
+        <p class="form-note">🔒 Tes données restent confidentielles. Pas de spam, jamais.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FAQ
+       ============================================ -->
+  <section>
+    <div class="container">
+      <h2>Questions fréquentes</h2>
+
+      <div class="faq-item">
+        <h3>C'est légal de scraper LinkedIn et autres sources ?</h3>
+        <p>Oui. Je n'utilise pas de scraping agressif. Sources : APIs publiques, RSS, flux officiels. Tu restes 100% clean.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Et si l'agent hallucine ?</h3>
+        <p>Chaque signal est sourcé (URL cliquable). Tu vérifies en 1 clic. Si hallucination avérée → correctif immédiat.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Combien de concurrents je peux suivre ?</h3>
+        <p>Illimité. La plupart des clients en suivent 3-7.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Combien de temps pour l'onboarding ?</h3>
+        <p>30 min en visio, une seule fois.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CTA FINAL
+       ============================================ -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>👉 Démo gratuite en 24h</h2>
+      <p style="color: var(--color-text-muted); font-size: 1.125rem;">Trois clics, et tu sais si ça vaut le coup pour ton business.</p>
+      <a href="#demo" class="btn btn-primary btn-large">Je réserve ma démo</a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="mailto:gabriel@tonsite.fr">gabriel@tonsite.fr</a>
+        <a href="https://linkedin.com/in/gabrielsuarez" rel="noopener" target="_blank">LinkedIn</a>
+      </div>
+      <div>Made with ❤️ en France · 2026</div>
+    </div>
+  </footer>
+
+</body>
+</html>
